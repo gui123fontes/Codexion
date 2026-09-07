@@ -6,7 +6,7 @@
 /*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:35:18 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/08/26 16:35:34 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/07 16:15:51 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 # define MAX_WAITERS 128
 
-#include <pthread.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/time.h>
-#include <stdio.h>
+# include <pthread.h>
+# include <stdlib.h>
+# include <string.h>
+# include <unistd.h>
+# include <sys/time.h>
+# include <stdio.h>
 
 typedef enum e_scheduler
 {
@@ -61,7 +61,7 @@ typedef struct s_coder
 	int				compiles_done;
 	long			last_compile_start;
 	pthread_mutex_t	stats_mutex;
-	struct s_sim	*sim
+	struct s_sim	*sim;
 }	t_coder;
 
 typedef struct s_sim
@@ -76,21 +76,26 @@ typedef struct s_sim
 	long			t0;
 }	t_sim;
 
+int		parse_args(int argc, char **argv, t_params *params);
+long	get_now_ms(void);
 
-int 	parse_args(int argc, char **argv, t_params *params);
-
-long 	get_now_ms(void);
-
-void 	dongle_init(t_dongle *d, int id, int cooldown_ms);
-void 	dongle_destroy(t_dongle *d);
-void 	dongle_take(t_dongle *d, int coder_id);
-void 	dongle_release(t_dongle *d);
+void	dongle_init(t_dongle *d, int id, int cooldown_ms);
+void	dongle_destroy(t_dongle *d);
+void	dongle_take(t_dongle *d, int coder_id);
+void	dongle_release(t_dongle *d);
 
 void	acquire_dongles(t_coder *coder);
 void	release_dongles(t_coder *coder);
+int		is_stopped(t_sim *sim);
+void    update_compile_start(t_coder *coder);
+void    increment_compiles(t_coder *coder);
 
 void	log_state(t_sim *sim, int coder_id, const char *state);
 void	*coder_routine(void *arg);
-
 void	*monitor_routine(void *arg);
+
+int     init_sim(t_sim *sim, t_params *params);
+void    cleanup_sim(t_sim *sim);
+int     run_simulation(t_sim *sim);
+
 #endif

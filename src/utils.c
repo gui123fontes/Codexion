@@ -6,12 +6,11 @@
 /*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:36:31 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/08/24 12:29:59 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/07 16:18:45 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-
 
 long get_now_ms(void)
 {
