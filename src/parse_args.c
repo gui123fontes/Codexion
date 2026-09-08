@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parse_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:36:26 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/08/20 17:32:24 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/08 11:15:58 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static int is_all_digits(const char *s)
+static int	is_all_digits(const char *s)
 {
 	if (!s || !*s)
 		return (0);
@@ -25,9 +25,9 @@ static int is_all_digits(const char *s)
 	return (1);
 }
 
-static long parse_number(const char *s, int allow_zero, int *ok)
+static long	parse_number(const char *s, int allow_zero, int *ok)
 {
-	long val;
+	long	val;
 
 	if (!is_all_digits(s))
 	{
@@ -43,7 +43,7 @@ static long parse_number(const char *s, int allow_zero, int *ok)
 	return (val);
 }
 
-static int parse_scheduler (const char *s, t_scheduler *out)
+static int	parse_scheduler(const char *s, t_scheduler *out)
 {
 	if (strcmp(s, "fifo") == 0)
 	{
@@ -58,9 +58,9 @@ static int parse_scheduler (const char *s, t_scheduler *out)
 	return (0);
 }
 
-static int fill_params(char **argv, t_params *p)
+static int	fill_params(char **argv, t_params *p)
 {
-	int ok;
+	int	ok;
 
 	ok = 1;
 	p->nb_coders = (int)parse_number(argv[1], 0, &ok);
@@ -73,7 +73,7 @@ static int fill_params(char **argv, t_params *p)
 	return (ok);
 }
 
-int parse_args(int argc, char **argv, t_params *params)
+int	parse_args(int argc, char **argv, t_params *params)
 {
 	if (argc != 9)
 	{
@@ -85,7 +85,7 @@ int parse_args(int argc, char **argv, t_params *params)
 		fprintf(stderr, "Error: invalid numeric argument\n");
 		return (0);
 	}
-	if(!parse_scheduler(argv[8], &params->scheduler))
+	if (!parse_scheduler(argv[8], &params->scheduler))
 	{
 		fprintf(stderr, "Error: scheduler must be 'fifo or 'edf'\n");
 		return (0);

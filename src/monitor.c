@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:36:24 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/08/26 16:37:20 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/08 11:14:42 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static void set_stopped(t_sim *sim)
+static void	set_stopped(t_sim *sim)
 {
 	pthread_mutex_lock(&sim->stop_mutex);
 	sim->stopped = 1;
 	pthread_mutex_unlock(&sim->stop_mutex);
 }
 
-static int read_last_compile_start(t_coder *coder)
+static int	read_last_compile_start(t_coder *coder)
 {
 	long	val;
 
@@ -29,9 +29,9 @@ static int read_last_compile_start(t_coder *coder)
 	return (val);
 }
 
-static int check_burnout(t_sim *sim, int i)
+static int	check_burnout(t_sim *sim, int i)
 {
-	long elapsed;
+	long	elapsed;
 
 	elapsed = get_now_ms() - read_last_compile_start(&sim->coders[i]);
 	if (elapsed > sim->params.time_to_burnout)
@@ -45,11 +45,11 @@ static int check_burnout(t_sim *sim, int i)
 
 static int	all_coders_done(t_sim *sim)
 {
-	int i;
-	int done;
+	int	i;
+	int	done;
 
 	i = 0;
-	while(i < sim->params.nb_coders)
+	while (i < sim->params.nb_coders)
 	{
 		pthread_mutex_lock(&sim->coders[i].stats_mutex);
 		done = (sim->coders[i].compiles_done >= sim->params.nb_compiles_required);
@@ -60,19 +60,19 @@ static int	all_coders_done(t_sim *sim)
 	}
 }
 
-void *monitor_routine(void *arg)
+void	*monitor_routine(void *arg)
 {
-	t_sim *sim;
-	int i;
+	t_sim	*sim;
+	int		i;
 
 	sim = (t_sim *)arg;
-	while(1)
+	while (1)
 	{
 		usleep(5000);
 		i = 0;
 		while (i < sim->params.nb_coders)
 		{
-			if(check_burnout(sim, i))
+			if (check_burnout(sim, i))
 				return (NULL);
 			i++;
 		}

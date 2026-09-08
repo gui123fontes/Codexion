@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   coder.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:35:30 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/07 12:33:42 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/08 10:05:17 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,12 @@ static void	take_right_then_left(t_coder *coder)
 
 void	acquire_dongles(t_coder *coder)
 {
+	if (coder->left == coder->right)
+	{
+		dongle_take(coder->left, coder->id);
+		log_state(coder->sim, coder->id, "has taken a dongle");
+		return ;
+	}
 	if (coder->id % 2 == 0)
 		take_left_then_right(coder);
 	else
