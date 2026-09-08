@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:35:18 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/07 16:15:51 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/08 09:16:45 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,15 +87,15 @@ void	dongle_release(t_dongle *d);
 void	acquire_dongles(t_coder *coder);
 void	release_dongles(t_coder *coder);
 int		is_stopped(t_sim *sim);
-void    update_compile_start(t_coder *coder);
-void    increment_compiles(t_coder *coder);
+void	update_compile_start(t_coder *coder);
+void	increment_compiles(t_coder *coder);
 
 void	log_state(t_sim *sim, int coder_id, const char *state);
 void	*coder_routine(void *arg);
 void	*monitor_routine(void *arg);
 
-int     init_sim(t_sim *sim, t_params *params);
-void    cleanup_sim(t_sim *sim);
-int     run_simulation(t_sim *sim);
+int		init_sim(t_sim *sim, t_params *params);
+void	cleanup_sim(t_sim *sim);
+int		run_simulation(t_sim *sim);
 
 #endif
