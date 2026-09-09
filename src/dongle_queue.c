@@ -1,27 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   dongle_queue.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/08/20 14:36:31 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/09 12:33:11 by gsilva-f         ###   ########.fr       */
+/*   Created: 2026/09/09 12:11:32 by gsilva-f          #+#    #+#             */
+/*   Updated: 2026/09/09 12:29:22 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-long	get_now_ms(void)
+void	enqueue_waiter(t_dongle *d, int coder_id)
 {
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000L) + (tv.tv_usec / 1000L));
+	d->waiters[d->nb_waiters] = coder_id;
+	d->nb_waiters++;
 }
 
-void	ms_to_timespec(long ms, struct timespec *ts)
+int	is_my_turn(t_dongle *d, int coder_id)
 {
-	ts->tv_sec = ms / 1000;
-	ts->tv_nsec = (ms % 1000) * 1000000;
+	return (d->nb_waiters > 0 && d->waiters[0] == coder_id);
+}
+
+void	dequeue_waiter(t_dongle *d)
+{
+	int	i;
+
+	i = 0;
+	while (i < d->nb_waiters - 1)
+	{
+		d->waiters[i] = d->waiters[i + 1];
+		i++;
+	}
+	d->nb_waiters--;
 }

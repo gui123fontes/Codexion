@@ -6,7 +6,7 @@
 /*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:35:56 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/08 11:12:48 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/09 13:32:23 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,6 @@ void	log_state(t_sim *sim, int coder_id, const char *state)
 	now = get_now_ms() - sim->t0;
 	pthread_mutex_lock(&sim->log_mutex);
 	printf("%ld %d %s\n", now, coder_id, state);
+	fflush(stdout);
 	pthread_mutex_unlock(&sim->log_mutex);
 }

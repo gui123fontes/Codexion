@@ -6,7 +6,7 @@
 /*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:35:30 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/08 10:05:17 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/09 15:52:47 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 static void	take_left_then_right(t_coder *coder)
 {
 	dongle_take(coder->left, coder->id);
-	log_state(coder->sim, coder->id, "has taken a dogle");
+	log_state(coder->sim, coder->id, "has taken a dongle");
 	dongle_take(coder->right, coder->id);
-	log_state(coder->sim, coder->id, "has taken a dogle");
+	log_state(coder->sim, coder->id, "has taken a dongle");
 }
 
 static void	take_right_then_left(t_coder *coder)
 {
 	dongle_take(coder->right, coder->id);
-	log_state(coder->sim, coder->id, "has taken a dogle");
+	log_state(coder->sim, coder->id, "has taken a dongle");
 	dongle_take(coder->left, coder->id);
-	log_state(coder->sim, coder->id, "has taken a dogle");
+	log_state(coder->sim, coder->id, "has taken a dongle");
 }
 
 void	acquire_dongles(t_coder *coder)
@@ -39,13 +39,14 @@ void	acquire_dongles(t_coder *coder)
 	if (coder->id % 2 == 0)
 		take_left_then_right(coder);
 	else
-		take_left_then_right(coder);
+		take_right_then_left(coder);
 }
 
 void	release_dongles(t_coder *coder)
 {
 	dongle_release(coder->left);
-	dongle_release(coder->right);
+	if (coder->left != coder->right)
+		dongle_release(coder->right);
 }
 
 void	*coder_routine(void *arg)

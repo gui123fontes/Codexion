@@ -6,7 +6,7 @@
 /*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:35:18 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/08 09:16:45 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/09 12:33:38 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,11 @@ typedef struct s_sim
 
 int		parse_args(int argc, char **argv, t_params *params);
 long	get_now_ms(void);
+void	ms_to_timespec(long ms, struct timespec *ts);
+
+void	enqueue_waiter(t_dongle *d, int coder_id);
+int		is_my_turn(t_dongle *d, int coder_id);
+void	dequeue_waiter(t_dongle *d);
 
 void	dongle_init(t_dongle *d, int id, int cooldown_ms);
 void	dongle_destroy(t_dongle *d);
@@ -89,6 +94,7 @@ void	release_dongles(t_coder *coder);
 int		is_stopped(t_sim *sim);
 void	update_compile_start(t_coder *coder);
 void	increment_compiles(t_coder *coder);
+int		coder_is_done(t_coder *coder, int required);
 
 void	log_state(t_sim *sim, int coder_id, const char *state);
 void	*coder_routine(void *arg);

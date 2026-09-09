@@ -6,7 +6,7 @@
 /*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:36:24 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/08 11:14:42 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/09 15:34:29 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	set_stopped(t_sim *sim)
 	pthread_mutex_unlock(&sim->stop_mutex);
 }
 
-static int	read_last_compile_start(t_coder *coder)
+static long	read_last_compile_start(t_coder *coder)
 {
 	long	val;
 
@@ -46,18 +46,17 @@ static int	check_burnout(t_sim *sim, int i)
 static int	all_coders_done(t_sim *sim)
 {
 	int	i;
-	int	done;
+	int	required;
 
+	required = sim->params.nb_compiles_required;
 	i = 0;
 	while (i < sim->params.nb_coders)
 	{
-		pthread_mutex_lock(&sim->coders[i].stats_mutex);
-		done = (sim->coders[i].compiles_done >= sim->params.nb_compiles_required);
-		pthread_mutex_unlock(&sim->coders[i].stats_mutex);
-		if (!done)
+		if (!coder_is_done(&sim->coders[i], required))
 			return (0);
 		i++;
 	}
+	return (1);
 }
 
 void	*monitor_routine(void *arg)

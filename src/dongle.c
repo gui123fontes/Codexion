@@ -6,7 +6,7 @@
 /*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:35:40 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/08 11:10:39 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/09 13:13:17 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,36 +29,25 @@ void	dongle_destroy(t_dongle *d)
 	pthread_cond_destroy(&d->cond);
 }
 
-static void	enqueue_waiter(t_dongle *d, int coder_id)
-{
-	d->waiters[d->nb_waiters] = coder_id;
-	d->nb_waiters++;
-}
-
-static int	is_my_turn(t_dongle *d, int coder_id)
-{
-	return (d->nb_waiters > 0 && d->waiters[0] == coder_id);
-}
-
-static void	dequeue_waiter(t_dongle *d)
-{
-	int	i;
-
-	i = 0;
-	while (i < d->nb_waiters - 1)
-	{
-		d->waiters[i] = d->waiters[i + 1];
-		i++;
-	}
-	d->nb_waiters--;
-}
-
 void	dongle_take(t_dongle *d, int coder_id)
 {
+	struct timespec	ts;
+	int				cooling_down;
+
 	pthread_mutex_lock(&d->mutex);
 	enqueue_waiter(d, coder_id);
-	while (d->taken || get_now_ms() < d->unavailable_until || !is_my_turn(d, coder_id))
-		pthread_cond_wait(&d->cond, &d->mutex);
+	cooling_down = get_now_ms() < d->unavailable_until;
+	while (d->taken || cooling_down || !is_my_turn(d, coder_id))
+	{
+		if (!d->taken && cooling_down)
+		{
+			ms_to_timespec(d->unavailable_until, &ts);
+			pthread_cond_timedwait(&d->cond, &d->mutex, &ts);
+		}
+		else
+			pthread_cond_wait(&d->cond, &d->mutex);
+		cooling_down = get_now_ms() < d->unavailable_until;
+	}
 	dequeue_waiter(d);
 	d->taken = 1;
 	pthread_mutex_unlock(&d->mutex);
