@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   dongle.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:35:40 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/09 13:13:17 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/10 13:49:12 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	dongle_init(t_dongle *d, int id, int cooldown_ms)
+void	dongle_init(t_dongle *d, int id, int cooldown_ms, t_scheduler sched)
 {
 	d->id = id;
 	pthread_mutex_init(&d->mutex, NULL);
@@ -20,7 +20,8 @@ void	dongle_init(t_dongle *d, int id, int cooldown_ms)
 	d->taken = 0;
 	d->unavailable_until = 0;
 	d->cooldown_ms = cooldown_ms;
-	d->nb_waiters = 0;
+	d->heap_size = 0;
+	d->scheduler = sched;
 }
 
 void	dongle_destroy(t_dongle *d)
@@ -29,15 +30,15 @@ void	dongle_destroy(t_dongle *d)
 	pthread_cond_destroy(&d->cond);
 }
 
-void	dongle_take(t_dongle *d, int coder_id)
+void	dongle_take(t_dongle *d, int coder_id, long deadline)
 {
 	struct timespec	ts;
 	int				cooling_down;
 
 	pthread_mutex_lock(&d->mutex);
-	enqueue_waiter(d, coder_id);
+	dongle_enqueue(d, coder_id, deadline);
 	cooling_down = get_now_ms() < d->unavailable_until;
-	while (d->taken || cooling_down || !is_my_turn(d, coder_id))
+	while (d->taken || cooling_down || !dongle_is_my_turn(d, coder_id))
 	{
 		if (!d->taken && cooling_down)
 		{
@@ -48,7 +49,7 @@ void	dongle_take(t_dongle *d, int coder_id)
 			pthread_cond_wait(&d->cond, &d->mutex);
 		cooling_down = get_now_ms() < d->unavailable_until;
 	}
-	dequeue_waiter(d);
+	dongle_dequeue(d);
 	d->taken = 1;
 	pthread_mutex_unlock(&d->mutex);
 }

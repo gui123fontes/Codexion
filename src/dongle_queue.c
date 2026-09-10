@@ -3,35 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   dongle_queue.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/09 12:11:32 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/09 12:29:22 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/10 13:45:38 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	enqueue_waiter(t_dongle *d, int coder_id)
+void	dongle_enqueue(t_dongle *d, int coder_id, long deadline)
 {
-	d->waiters[d->nb_waiters] = coder_id;
-	d->nb_waiters++;
+	t_heap_item	item;
+
+	item.coder_id = coder_id;
+	item.arrival_time = get_now_ms();
+	item.deadline = deadline;
+	heap_push(d->heap, &d->heap_size, item, d->scheduler);
 }
 
-int	is_my_turn(t_dongle *d, int coder_id)
+int	dongle_is_my_turn(t_dongle *d, int coder_id)
 {
-	return (d->nb_waiters > 0 && d->waiters[0] == coder_id);
+	if (d->heap_size == 0)
+		return (0);
+	return (d->heap[0].coder_id == coder_id);
 }
 
-void	dequeue_waiter(t_dongle *d)
+void	dongle_dequeue(t_dongle *d)
 {
-	int	i;
-
-	i = 0;
-	while (i < d->nb_waiters - 1)
-	{
-		d->waiters[i] = d->waiters[i + 1];
-		i++;
-	}
-	d->nb_waiters--;
+	heap_pop(d->heap, &d->heap_size, d->scheduler);
 }

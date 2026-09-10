@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sim_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/08 09:16:53 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/08 16:25:57 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/10 14:46:56 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ static void	init_dongles(t_sim *sim)
 	i = 0;
 	while (i < nb)
 	{
-		dongle_init(&sim->dongles[i], i, sim->params.dongle_cooldown);
+		dongle_init(&sim->dongles[i], i, sim->params.dongle_cooldown,
+			sim->params.scheduler);
 		i++;
 	}
 }

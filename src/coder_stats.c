@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   coder_stats.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 12:33:47 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/09 15:30:26 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/10 13:59:46 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,14 @@ int	coder_is_done(t_coder *coder, int required)
 	done = (coder->compiles_done >= required);
 	pthread_mutex_unlock(&coder->stats_mutex);
 	return (done);
+}
+
+long	get_deadline(t_coder *coder)
+{
+	long	start;
+
+	pthread_mutex_lock(&coder->stats_mutex);
+	start = coder->last_compile_start;
+	pthread_mutex_unlock(&coder->stats_mutex);
+	return (start + coder->sim->params.time_to_burnout);
 }

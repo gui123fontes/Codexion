@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   coder.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:35:30 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/09 15:52:47 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/10 14:11:42 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,34 @@
 
 static void	take_left_then_right(t_coder *coder)
 {
-	dongle_take(coder->left, coder->id);
+	long	deadline;
+
+	deadline = get_deadline(coder);
+	dongle_take(coder->left, coder->id, deadline);
 	log_state(coder->sim, coder->id, "has taken a dongle");
-	dongle_take(coder->right, coder->id);
+	dongle_take(coder->right, coder->id, deadline);
 	log_state(coder->sim, coder->id, "has taken a dongle");
 }
 
 static void	take_right_then_left(t_coder *coder)
 {
-	dongle_take(coder->right, coder->id);
+	long	deadline;
+
+	deadline = get_deadline(coder);
+	dongle_take(coder->right, coder->id, deadline);
 	log_state(coder->sim, coder->id, "has taken a dongle");
-	dongle_take(coder->left, coder->id);
+	dongle_take(coder->left, coder->id, deadline);
 	log_state(coder->sim, coder->id, "has taken a dongle");
 }
 
 void	acquire_dongles(t_coder *coder)
 {
+	long	deadline;
+
 	if (coder->left == coder->right)
 	{
-		dongle_take(coder->left, coder->id);
+		deadline = get_deadline(coder);
+		dongle_take(coder->left, coder->id, deadline);
 		log_state(coder->sim, coder->id, "has taken a dongle");
 		return ;
 	}
