@@ -16,6 +16,7 @@ SRC			= main.c \
 			  dongle_queue.c \
 			  coder.c \
 			  coder_stats.c \
+			  coder_cycle.c \
 			  monitor.c \
 			  logger.c \
 			  utils.c \

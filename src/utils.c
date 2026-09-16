@@ -6,7 +6,7 @@
 /*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:36:31 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/10 12:29:49 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/15 15:03:29 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	is_higher_priority(t_heap_item *a, t_heap_item *b, t_scheduler sched)
 {
 	if (sched == SCHEDULER_EDF)
 		return (a->deadline < b->deadline);
-	return (a->arrival_time < b->arrival_time);
+	return (a->arrival_time > b->arrival_time);
 }
 
 void	swap_items(t_heap_item *a, t_heap_item *b)

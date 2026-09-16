@@ -6,7 +6,7 @@
 /*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:35:30 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/10 14:11:42 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/14 14:55:52 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,33 @@
 
 static void	take_left_then_right(t_coder *coder)
 {
-	long	deadline;
-
-	deadline = get_deadline(coder);
-	dongle_take(coder->left, coder->id, deadline);
-	log_state(coder->sim, coder->id, "has taken a dongle");
-	dongle_take(coder->right, coder->id, deadline);
-	log_state(coder->sim, coder->id, "has taken a dongle");
+	dongle_take(coder->left, coder->id, get_deadline(coder));
+	if (!is_stopped(coder->sim))
+		log_state(coder->sim, coder->id, "has taken a dongle");
+	dongle_take(coder->right, coder->id, get_deadline(coder));
+	if (!is_stopped(coder->sim))
+		log_state(coder->sim, coder->id, "has taken a dongle");
 }
 
 static void	take_right_then_left(t_coder *coder)
 {
-	long	deadline;
-
-	deadline = get_deadline(coder);
-	dongle_take(coder->right, coder->id, deadline);
-	log_state(coder->sim, coder->id, "has taken a dongle");
-	dongle_take(coder->left, coder->id, deadline);
-	log_state(coder->sim, coder->id, "has taken a dongle");
+	dongle_take(coder->right, coder->id, get_deadline(coder));
+	if (!is_stopped(coder->sim))
+		log_state(coder->sim, coder->id, "has taken a dongle");
+	dongle_take(coder->left, coder->id, get_deadline(coder));
+	if (!is_stopped(coder->sim))
+		log_state(coder->sim, coder->id, "has taken a dongle");
 }
 
-void	acquire_dongles(t_coder *coder)
+int	acquire_dongles(t_coder *coder)
 {
-	long	deadline;
-
 	if (coder->left == coder->right)
-	{
-		deadline = get_deadline(coder);
-		dongle_take(coder->left, coder->id, deadline);
-		log_state(coder->sim, coder->id, "has taken a dongle");
-		return ;
-	}
+		return (acquire_single_dongle(coder));
 	if (coder->id % 2 == 0)
 		take_left_then_right(coder);
 	else
 		take_right_then_left(coder);
+	return (0);
 }
 
 void	release_dongles(t_coder *coder)
@@ -65,20 +57,11 @@ void	*coder_routine(void *arg)
 	coder = (t_coder *)arg;
 	while (!is_stopped(coder->sim))
 	{
-		acquire_dongles(coder);
-		update_compile_start(coder);
-		log_state(coder->sim, coder->id, "is compiling");
-		usleep(coder->sim->params.time_to_compile * 1000);
-		release_dongles(coder);
-		increment_compiles(coder);
-		if (is_stopped(coder->sim))
+		if (compile_phase(coder))
 			break ;
-		log_state(coder->sim, coder->id, "is debugging");
-		usleep(coder->sim->params.time_to_debug * 1000);
-		if (is_stopped(coder->sim))
+		if (debug_phase(coder))
 			break ;
-		log_state(coder->sim, coder->id, "is refactoring");
-		usleep(coder->sim->params.time_to_refactor * 1000);
+		refactor_phase(coder);
 	}
 	return (NULL);
 }

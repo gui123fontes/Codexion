@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:36:24 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/09 15:34:29 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/14 14:02:31 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ static int	check_burnout(t_sim *sim, int i)
 	elapsed = get_now_ms() - read_last_compile_start(&sim->coders[i]);
 	if (elapsed > sim->params.time_to_burnout)
 	{
-		set_stopped(sim);
 		log_state(sim, sim->coders[i].id, "burned out");
+		set_stopped(sim);
 		return (1);
 	}
 	return (0);

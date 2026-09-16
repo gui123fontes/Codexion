@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gsilva-f <gsilva-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gsilva-f <gsilva-f@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/09 10:38:04 by gsilva-f          #+#    #+#             */
-/*   Updated: 2026/09/09 11:17:19 by gsilva-f         ###   ########.fr       */
+/*   Updated: 2026/09/14 16:38:15 by gsilva-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,18 @@ static void	join_coders(t_sim *sim)
 	}
 }
 
+static int	already_done(t_sim *sim)
+{
+	return (sim->params.nb_compiles_required == 0);
+}
+
 int	run_simulation(t_sim *sim)
 {
+	if (already_done(sim))
+	{
+		sim->stopped = 1;
+		return (1);
+	}
 	if (!start_coders(sim))
 		return (0);
 	if (pthread_create(&sim->monitor_thread, NULL,
